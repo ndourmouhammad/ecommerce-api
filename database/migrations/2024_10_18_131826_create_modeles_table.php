@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('modeles', function (Blueprint $table) {
             $table->id();
+            $table->string('libelle');
             $table->text('description');
             $table->json('caracteristiques');
             $table->foreignId('marque_id')->constrained()->onDelete('cascade');

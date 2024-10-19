@@ -17,7 +17,11 @@ class CategorieFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'nom' => $this->faker->word(),
+            'description' => $this->faker->paragraph(),
+            'created_at' => now(),
+            'updated_at' => now(),
+            'deleted_at' => null
         ];
     }
 }

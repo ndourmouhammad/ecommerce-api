@@ -17,7 +17,16 @@ class ModeleFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'description' => $this->faker->paragraph(),
+            'marque_id' => $this->faker->numberBetween(1, 10),
+            'caracteristiques' => json_encode([
+                'feature1' => 'Nihil consequuntur itaque consequatur totam deserunt numquam quia.',
+                'feature2' => 'Debitis nostrum officia aperiam fuga labore nihil.',
+                'feature3' => 'Possimus quisquam sunt pariatur minima ex aperiam et.',
+            ]),
+            'created_at' => now(),
+            'updated_at' => now(),
+            'deleted_at' => null
         ];
     }
 }

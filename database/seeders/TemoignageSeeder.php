@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Temoignage;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class TemoignageSeeder extends Seeder
 {
@@ -12,6 +13,18 @@ class TemoignageSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        Temoignage::create([
+            'text' => 'Excellent service, je recommande vivement !',
+            'image_path' => null,
+            'date_publication' => now(),
+            'statut' => 'approuve',
+        ]);
+
+        Temoignage::create([
+            'text' => 'Le service pourrait être amélioré à certains égards.',
+            'image_path' => null,
+            'date_publication' => now(),
+            'statut' => 'non_approuve',
+        ]);
     }
 }
