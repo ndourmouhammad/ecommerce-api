@@ -26,7 +26,7 @@ class StoreAuthRequest extends FormRequest
     {
         return [
             'name' => 'required|string|min:2|max:25',
-            'email' => 'required|string|email|min:3|max:25|unique:users',
+            'email' => 'required|string|email|min:3|max:55|unique:users',
             'password' => 'required|string|min:8',
             'adresse' => 'required|string|min:2|max:55',
             'numero_telephone' => 'required|integer|min:9',
