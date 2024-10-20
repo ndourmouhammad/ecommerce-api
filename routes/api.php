@@ -1,34 +1,28 @@
 <?php
 use App\Http\Controllers\AuthController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
+    
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout']);
-// Rafraîchir le token JWT
-Route::post('/refresh', [AuthController::class, 'refresh']);
 
-// Réinitialiser le mot de passe
-Route::post('/password/reset', [ResetPasswordController::class, 'reset']);
-Route::post('/password/reset/{token}', [ResetPasswordController::class, 'update']);
+// User Registration and Authentication Routes
+Route::post('/register', [AuthController::class, 'register']);  // Register a new user
+Route::post('/login', [AuthController::class, 'login']);        // Login user and return JWT token
+Route::post('/logout', [AuthController::class, 'logout']);      // Logout the user (invalidate JWT token)
+Route::post('/refresh', [AuthController::class, 'refresh']);    // Refresh JWT token
 
-// Envoyer un lien de vérification d'email
-Route::post('/email/verification-notification', function (Request $request) {
-    $request->user()->sendEmailVerificationNotification();
 
-    return response()->json(['message' => 'Email de vérification envoyé.']);
-})->middleware('auth:api');
 
-// Vérifier l'email
+// Password Reset Routes
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);  // Request password reset link
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);    // Reset the password
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+
+
+
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
 
     return response()->json(['message' => 'Email vérifié avec succès.']);
-})->middleware(['auth:api', 'signed']);
+})->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
 
-// Protéger les routes avec la vérification d'email
-Route::middleware(['auth:api', 'verified'])->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
-});
