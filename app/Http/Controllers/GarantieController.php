@@ -13,15 +13,8 @@ class GarantieController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $garanties = Garantie::all();
+        return $this->customJsonResponse("Listes des garanties récupérées : ", $garanties);
     }
 
     /**
@@ -29,31 +22,36 @@ class GarantieController extends Controller
      */
     public function store(StoreGarantieRequest $request)
     {
-        //
+        $garantie = new Garantie();
+        $garantie->fill($request->validated());
+        $garantie->save();
+        return $this->customJsonResponse("Garantie créée", $garantie);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Garantie $garantie)
+    public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Garantie $garantie)
-    {
-        //
+        $garantie = Garantie::findOrFail($id);
+        if (!$garantie) {
+            return $this->customJsonResponse("Garantie introuvable", null, 404);
+        }
+        return $this->customJsonResponse("Garantie récupérée", $garantie);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateGarantieRequest $request, Garantie $garantie)
+    public function update(UpdateGarantieRequest $request, $id)
     {
-        //
+        $garantie = Garantie::findOrFail($id);
+        if (!$garantie) {
+            return $this->customJsonResponse("Garantie introuvable", null, 404);
+        }
+        $garantie->fill($request->validated());
+        $garantie->update();
+        return $this->customJsonResponse("Garantie mise à jour", $garantie);
     }
 
     /**

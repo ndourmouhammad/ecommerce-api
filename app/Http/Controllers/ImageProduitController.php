@@ -13,54 +13,68 @@ class ImageProduitController extends Controller
      */
     public function index()
     {
-        //
+        $imageProduits = ImageProduit::all();
+        return $this->customJsonResponse("Listes des images produits récupérées : ", $imageProduits);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoreImageProduitRequest $request)
     {
-        //
+        $imageProduit = new ImageProduit();
+        $imageProduit->fill($request->validated());
+
+        if ($request->hasFile('path')) {
+            $path = $request->file('path');
+            $imageProduit->path = $path->store('images', 'public');
+        }
+
+        $imageProduit->save();
+        return $this->customJsonResponse("Image Produit créée", $imageProduit);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(ImageProduit $imageProduit)
+    public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ImageProduit $imageProduit)
-    {
-        //
+        $imageProduit = ImageProduit::find($id);
+        if (!$imageProduit) {
+            return $this->customJsonResponse("Image Produit introuvable", null, 404);
+        }
+        return $this->customJsonResponse("Image Produit récupérée", $imageProduit);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateImageProduitRequest $request, ImageProduit $imageProduit)
+    public function update(UpdateImageProduitRequest $request,$id)
     {
-        //
+        $imageProduit = ImageProduit::find($id);
+        if (!$imageProduit) {
+            return $this->customJsonResponse("Image Produit introuvable", null, 404);
+        }
+        $imageProduit->fill($request->validated());
+        if ($request->hasFile('path')) {
+            $path = $request->file('path');
+            $imageProduit->path = $path->store('images', 'public');
+        }
+        $imageProduit->update();
+        return $this->customJsonResponse("Image Produit mise a jour", $imageProduit);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ImageProduit $imageProduit)
+    public function destroy($id)
     {
-        //
+        $imageProduit = ImageProduit::find($id);
+        if (!$imageProduit) {
+            return $this->customJsonResponse("Image Produit introuvable", null, 404);
+        }   
+        $imageProduit->delete();
+        return $this->customJsonResponse("Image Produit supprime", null, 200);
     }
 }

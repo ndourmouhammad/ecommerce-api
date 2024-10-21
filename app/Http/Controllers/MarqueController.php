@@ -13,15 +13,8 @@ class MarqueController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $marques = Marque::all();
+        return $this->customJsonResponse("Listes des marques récupérées : ", $marques);
     }
 
     /**
@@ -29,38 +22,51 @@ class MarqueController extends Controller
      */
     public function store(StoreMarqueRequest $request)
     {
-        //
+        $marque = new Marque();
+        $marque->fill($request->validated());
+        $marque->save();
+
+        return $this->customJsonResponse("Marque ajoutée avec succès", $marque);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Marque $marque)
+    public function show($id)
     {
-        //
-    }
+        $marque = Marque::findOrFail($id);
+        if (!$marque) {
+            return $this->customJsonResponse("Marque introuvable", null, 404);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Marque $marque)
-    {
-        //
+        return $this->customJsonResponse("Marque récupérée : ", $marque);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateMarqueRequest $request, Marque $marque)
+    public function update(UpdateMarqueRequest $request, $id)
     {
-        //
+        $marque = Marque::findOrFail($id);
+        if (!$marque) {
+            return $this->customJsonResponse("Marque introuvable", null, 404);
+        }
+        $marque->fill($request->validated());
+        $marque->update();
+
+        return $this->customJsonResponse("Marque mise à jour avec succès", $marque);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Marque $marque)
+    public function destroy($id)
     {
-        //
+        $marque = Marque::findOrFail($id);
+        if (!$marque) {
+            return $this->customJsonResponse("Marque introuvable", null, 404);
+        }
+        $marque->delete();
+        return $this->customJsonResponse("Marque supprimée avec succès", $marque);
     }
 }

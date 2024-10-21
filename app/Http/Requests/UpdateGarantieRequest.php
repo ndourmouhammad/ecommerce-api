@@ -3,7 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 class UpdateGarantieRequest extends FormRequest
 {
     /**
@@ -11,7 +12,7 @@ class UpdateGarantieRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,18 @@ class UpdateGarantieRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            "libelle" => ["sometimes", "string", "max:255"],
+            "description" => ["sometimes", "string", "max:255"],
+            "path_icone" => ["sometimes", "string", "max:255"],
+            "duree" => ["sometimes", "integer", "min:1"],
         ];
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json(
+            ['success' => false, 'errors' => $validator->errors()],
+            422
+        ));
     }
 }
