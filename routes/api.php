@@ -33,5 +33,10 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 
 // command
 Route::middleware('auth:api')->group(function () {
+
+    // 
+    Route::patch('/commandes/status/{id}', [CommandeController::class, 'updateEtatCommande']);
+
+
     Route::apiResource('/commandes', CommandeController::class);
 });

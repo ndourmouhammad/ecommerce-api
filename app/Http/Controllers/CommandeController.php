@@ -7,6 +7,8 @@ use App\Http\Requests\UpdateCommandeRequest;
 use App\Models\Commande;
 use App\Models\CommandeProduit;
 use DB;
+use Illuminate\Http\Request;
+
 
 class CommandeController extends Controller
 {
@@ -15,7 +17,10 @@ class CommandeController extends Controller
      */
     public function index()
     {
-        //
+        // Récupérer toutes les commandes avec leurs utilisateurs et produits associés
+        $commandes = Commande::with(['user', 'commandes.produit'])->get();
+        return $this->customJsonResponse('Liste des commandes', $commandes);
+
     }
 
  
@@ -73,7 +78,31 @@ class CommandeController extends Controller
             ], 500);
         }
     }
-      
+
+    
+    /**
+     * Display update etat_commande 
+     */
+    public function updateEtatCommande( $id, Request $request) {
+        // Valider l'état de la commande
+        $request->validate([
+            'etat_commande' => 'required|string|max:255', // Adapter selon vos besoins
+        ]);
+    
+        // commande
+        $commande = Commande::find($id);
+        if (!$commande) {
+            return response()->json([
+                'error' => 'Commande introuvable.',
+            ], 404);
+        }
+        // Mettre à jour l'état de la commande
+        $commande->etat_commande = $request->etat_commande;
+        $commande->save();
+    
+        return $this->customJsonResponse('État de la commande modifié avec succès', $commande);
+    }
+    
     
 
     /**
