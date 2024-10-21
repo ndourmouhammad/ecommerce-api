@@ -4,8 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MarqueController;
 use App\Http\Controllers\ModeleController;
+use App\Http\Controllers\ProduitController;
 use App\Http\Controllers\GarantieController;
 use App\Http\Controllers\CategorieController;
+use App\Http\Controllers\ImageProduitController;
+use App\Http\Controllers\GarantieProduitController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
     
 
@@ -47,3 +50,15 @@ Route::post('/categories/{id}', [CategorieController::class, 'update']);
 // Garantie CRUD
 Route::apiResource('/garanties', GarantieController::class)->only(['index', 'store', 'destroy', 'show']);
 Route::post('/garanties/{id}', [GarantieController::class, 'update']);
+
+// Produit CRUD
+Route::apiResource('/produits', ProduitController::class)->only(['index', 'store', 'destroy', 'show']);
+Route::post('/produits/{id}', [ProduitController::class, 'update']);
+
+// ImageProduit CRUD
+Route::apiResource('/imageproduits', ImageProduitController::class)->only(['index', 'store', 'destroy', 'show']);
+Route::post('/imageproduits/{id}', [ImageProduitController::class, 'update']);
+
+// Garantie Produit CRUD
+Route::apiResource('/garantieproduits', GarantieProduitController::class)->only(['index', 'store', 'destroy', 'show']);
+Route::post('/garantieproduits/{id}', [GarantieProduitController::class, 'update']);

@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateImageProduitRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class UpdateImageProduitRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,17 @@ class UpdateImageProduitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            "libelle" => ["sometimes", "string", "max:255"],
+            "path" => ["sometimes", "image", "mimes:jpeg,png,jpg,gif,svg", "max:4096"],
+            "produit_id" => ["sometimes", "exists:produits,id"],
         ];
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json(
+            ['success' => false, 'errors' => $validator->errors()],
+            422
+        ));
     }
 }

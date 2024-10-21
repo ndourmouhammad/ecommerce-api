@@ -13,15 +13,8 @@ class GarantieProduitController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $garantieProduits = GarantieProduit::all();
+        return $this->customJsonResponse("Listes des garanties produits récupérées : ", $garantieProduits);
     }
 
     /**
@@ -29,38 +22,48 @@ class GarantieProduitController extends Controller
      */
     public function store(StoreGarantieProduitRequest $request)
     {
-        //
+        $garantieProduit = new GarantieProduit();
+        $garantieProduit->fill($request->validated());
+        $garantieProduit->save();
+        return $this->customJsonResponse("Garantie Produit créée", $garantieProduit);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(GarantieProduit $garantieProduit)
+    public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(GarantieProduit $garantieProduit)
-    {
-        //
+        $garantieProduit = GarantieProduit::find($id);
+        if (!$garantieProduit) {
+            return $this->customJsonResponse("Garantie Produit introuvable", null, 404);
+        }
+        return $this->customJsonResponse("Garantie Produit récupérée", $garantieProduit);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateGarantieProduitRequest $request, GarantieProduit $garantieProduit)
+    public function update(UpdateGarantieProduitRequest $request, $id)
     {
-        //
+        $garantieProduit = GarantieProduit::find($id);
+        if (!$garantieProduit) {
+            return $this->customJsonResponse("Garantie Produit introuvable", null, 404);
+        }
+        $garantieProduit->fill($request->validated());
+        $garantieProduit->update();
+        return $this->customJsonResponse("Garantie Produit mise a jour", $garantieProduit);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(GarantieProduit $garantieProduit)
+    public function destroy($id)
     {
-        //
+        $garantieProduit = GarantieProduit::find($id);
+        if (!$garantieProduit) {
+            return $this->customJsonResponse("Garantie Produit introuvable", null, 404);
+        }
+        $garantieProduit->delete();
+        return $this->customJsonResponse("Garantie Produit supprimée", null, 200);
     }
 }

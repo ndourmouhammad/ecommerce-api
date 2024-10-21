@@ -13,15 +13,8 @@ class ProduitController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $produits = Produit::all();
+        return $this->customJsonResponse("Listes des produits récupérées : ", $produits);
     }
 
     /**
@@ -29,38 +22,48 @@ class ProduitController extends Controller
      */
     public function store(StoreProduitRequest $request)
     {
-        //
+        $produit = new Produit();
+        $produit->fill($request->validated());
+        $produit->save();
+        return $this->customJsonResponse("Produit créé", $produit);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Produit $produit)
+    public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Produit $produit)
-    {
-        //
+        $produit = Produit::find($id);
+        if (!$produit) {
+            return $this->customJsonResponse("Produit introuvable", null, 404);
+        }
+        return $this->customJsonResponse("Produit récupéré", $produit);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProduitRequest $request, Produit $produit)
+    public function update(UpdateProduitRequest $request, $id)
     {
-        //
+        $produit = Produit::find($id);
+        if (!$produit) {
+            return $this->customJsonResponse("Produit introuvable", null, 404);
+        }
+        $produit->fill($request->validated());
+        $produit->update();
+        return $this->customJsonResponse("Produit mis a jour", $produit);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Produit $produit)
+    public function destroy($id)
     {
-        //
+        $produit = Produit::find($id);
+        if (!$produit) {
+            return $this->customJsonResponse("Produit introuvable", null, 404);
+        }
+        $produit->delete();
+        return $this->customJsonResponse("Produit supprime", null, 200);
     }
 }
