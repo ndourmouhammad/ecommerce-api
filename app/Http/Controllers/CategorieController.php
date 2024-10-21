@@ -13,15 +13,8 @@ class CategorieController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $categories = Categorie::all();
+        return $this->customJsonResponse("Listes des catégories récupérées : ", $categories);
     }
 
     /**
@@ -29,38 +22,48 @@ class CategorieController extends Controller
      */
     public function store(StoreCategorieRequest $request)
     {
-        //
+        $categorie = new Categorie();
+        $categorie->fill($request->validated());
+        $categorie->save();
+        return $this->customJsonResponse("Catégorie créée", $categorie);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Categorie $categorie)
+    public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Categorie $categorie)
-    {
-        //
+        $categorie = Categorie::find($id);
+        if (!$categorie) {
+            return $this->customJsonResponse("Catégorie introuvable", null, 404);
+        }
+        return $this->customJsonResponse("Catégorie récupérée", $categorie);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCategorieRequest $request, Categorie $categorie)
+    public function update(UpdateCategorieRequest $request, $id)
     {
-        //
+        $categorie = Categorie::find($id);
+        if (!$categorie) {
+            return $this->customJsonResponse("Catégorie introuvable", null, 404);
+        }
+        $categorie->fill($request->validated());
+        $categorie->update();
+        return $this->customJsonResponse("Catégorie mise à jour", $categorie);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Categorie $categorie)
+    public function destroy($id)
     {
-        //
+        $categorie = Categorie::find($id);
+        if (!$categorie) {
+            return $this->customJsonResponse("Catégorie introuvable", null, 404);
+        }
+        $categorie->delete();
+        return $this->customJsonResponse("Catégorie supprimée", null, 200);
     }
 }
