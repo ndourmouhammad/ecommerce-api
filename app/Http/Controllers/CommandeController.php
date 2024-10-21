@@ -110,7 +110,16 @@ class CommandeController extends Controller
      */
     public function show(Commande $commande)
     {
-        //
+        // Récupérer la commande avec ses utilisateurs et produits associés
+        $commande = Commande::with(['user', 'commandes.produit'])->find($commande);
+        if (!$commande) {
+            return response()->json([
+                'error' => 'Commande introuvable.',
+            ], 404);
+        }
+        // Retourner une réponse JSON personnalisée avec les produits
+        return $this->customJsonResponse('Commande', $commande);
+        
     }
 
     /**
