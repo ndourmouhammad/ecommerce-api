@@ -11,7 +11,7 @@ class StoreCommandeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,12 @@ class StoreCommandeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
-        ];
+                'produits' => 'required|array',
+                'produits.*' => 'exists:produits,id',
+                'quantites' => 'required|array',
+                'quantites.*' => 'integer|min:1',
+                'prix_unitaire' => 'required|array',
+                'prix_unitaire.*' => 'numeric|min:0',
+            ];
     }
 }

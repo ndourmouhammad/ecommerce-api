@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommandeController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
     
@@ -26,3 +27,11 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     return response()->json(['message' => 'Email vérifié avec succès.']);
 })->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
 
+
+
+
+
+// command
+Route::middleware('auth:api')->group(function () {
+    Route::apiResource('/commandes', CommandeController::class);
+});

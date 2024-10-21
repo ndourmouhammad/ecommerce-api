@@ -20,4 +20,5 @@ class CommandeProduit extends Model
     {
         return $this->belongsTo(Commande::class);
     }
+  
 }

@@ -44,7 +44,7 @@ class AuthController extends Controller
         return $this->customJsonResponse("Utilisateur créé avec succès. Veuillez vérifier votre adresse e-mail.", $user);
     }
 
-
+ 
     public function login(Request $request)
     {
         // Validation des données de la requête
