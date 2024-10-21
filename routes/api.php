@@ -36,6 +36,8 @@ Route::middleware('auth:api')->group(function () {
 
     // 
     Route::patch('/commandes/status/{id}', [CommandeController::class, 'updateEtatCommande']);
+    Route::get('/commandes/client', [CommandeController::class, 'myCommandes']);
+
 
 
     Route::apiResource('/commandes', CommandeController::class);

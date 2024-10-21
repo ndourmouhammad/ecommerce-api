@@ -122,20 +122,43 @@ class CommandeController extends Controller
         
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Commande $commande)
-    {
-        //
-    }
-
+  
+    
     /**
      * Update the specified resource in storage.
      */
     public function update(UpdateCommandeRequest $request, Commande $commande)
     {
-        //
+        // auth user
+        $user = auth()->user();
+        if ($user->id!= $commande->user_id) {
+            return response()->json([
+                'error' => 'Vous n\'êtes pas le propriétaire de cette commande.',
+            ], 403);
+        }
+
+        // Valider les données
+
+
+
+
+
+
+
+
+
+
+        $request->validate([
+            'reference_commande' => 'required|string|max:255',
+            'etat_commande' => 'required|string|max:255', // Adapter selon vos besoins
+        ]);
+        // Mettre à jour la commande
+        $commande->update($request->all());
+        // Retourner une réponse JSON personnalisée avec les produits
+        return $this->customJsonResponse('Commande modifiée avec succès', $commande);
+
+
+        
     }
 
     /**
@@ -143,6 +166,35 @@ class CommandeController extends Controller
      */
     public function destroy(Commande $commande)
     {
-        //
+        // auth user
+        if (!auth()->user()->hasRole(['Client','Admin'])) {
+            return response()->json([
+               'success' => false,
+               'message' => 'Vous n\'êtes pas autorisé à effectuer cette action.',
+            ], 403);
+        }
+        // Vérifier si la commande est liée à des commandes produits
+        $commande_produits = CommandeProduit::where('commande_id', $commande->id)->get();
+        if ($commande_produits->count() > 0) {
+            return response()->json([
+                'error' => 'Impossible de supprimer une commande avec des produits associés.',
+            ], 400);
+        }
+        // Supprimer la commande
+        $commande->delete();
+
+        // Retourner une réponse JSON personnalisée
+        return $this->customJsonResponse('Commande supprimée avec succès', null);
+       
+    }
+    
+
+    // Mes commande client connecte
+    public function myCommandes(){
+        // Auth user
+        $user = auth()->user();
+        // Récupérer toutes les commandes avec leurs utilisateurs et produits associés
+        $commandes = Commande::where('user_id', $user->id)->with(['user', 'commandes.produit'])->get();
+        return $this->customJsonResponse('Liste des commandes', $commandes);
     }
 }
