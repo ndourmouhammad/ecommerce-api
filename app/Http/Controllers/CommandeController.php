@@ -23,7 +23,16 @@ class CommandeController extends Controller
 
     }
 
- 
+    // affichege des commandes selon de etat_commande
+    public function indexByEtat($etat_commande)
+    {
+        // Récupérer toutes les commandes avec leurs utilisateurs et produits associés
+        $commandes = Commande::with(['user', 'commandes.produit'])
+            ->where('etat_commande', $etat_commande)
+            ->get();
+        return $this->customJsonResponse('Liste des commandes avec état '.$etat_commande, $commandes);
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -138,16 +147,6 @@ class CommandeController extends Controller
         }
 
         // Valider les données
-
-
-
-
-
-
-
-
-
-
         $request->validate([
             'reference_commande' => 'required|string|max:255',
             'etat_commande' => 'required|string|max:255', // Adapter selon vos besoins
@@ -156,8 +155,6 @@ class CommandeController extends Controller
         $commande->update($request->all());
         // Retourner une réponse JSON personnalisée avec les produits
         return $this->customJsonResponse('Commande modifiée avec succès', $commande);
-
-
         
     }
 
